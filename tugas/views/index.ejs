@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistem Manajemen Kampus</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f3f4f6;
+            color: #1f2937;
+            padding: 40px 20px;
+            line-height: 1.6;
+        }
+
+        h1 {
+            text-align: center;
+            color: #111827;
+            margin-bottom: 8px;
+            font-size: 2rem;
+            font-weight: 700;
+        }
+
+        body > p {
+            text-align: center;
+            color: #6b7280;
+            margin-bottom: 40px;
+        }
+
+        hr {
+            border: none;
+            border-top: 1px solid #e5e7eb;
+            margin: 20px 0;
+        }
+
+        section {
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 16px;
+            margin-bottom: 40px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 
+                        0 2px 4px -1px rgba(0, 0, 0, 0.03);
+            border: 1px solid #f0f2f5;
+        }
+
+        section h2 {
+            color: #1f2937;
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            display: inline-block;
+        }
+
+        button, .btn-action {
+            padding: 10px 18px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #btn-tambah-dosen, #btn-tambah-matkul, #btn-tambah-mahasiswa {
+            background-color: #4f46e5;
+            color: white;
+            float: right;
+            margin-top: -5px;
+            box-shadow: 0 2px 4px rgba(79, 70, 229, 0.2);
+        }
+
+        #btn-tambah-dosen:hover, #btn-tambah-matkul:hover, #btn-tambah-mahasiswa:hover {
+            background-color: #4338ca;
+            transform: translateY(-1px);
+        }
+
+        button[type="submit"] {
+            background-color: #10b981;
+            color: white;
+            box-shadow: 0 2px 4px rgba(16, 185, 129, 0.2);
+        }
+
+        button[type="submit"]:hover {
+            background-color: #059669;
+        }
+
+        .btn-batal {
+            background-color: #e5e7eb;
+            color: #4b5563;
+            margin-left: 8px;
+        }
+
+        .btn-batal:hover {
+            background-color: #d1d5db;
+        }
+
+        .btn-edit-dosen, .btn-edit-matkul, .btn-edit-mahasiswa {
+            background-color: #f59e0b;
+            color: white;
+            padding: 6px 12px;
+            font-size: 0.8rem;
+            margin-right: 4px;
+        }
+
+        .btn-edit-dosen:hover, .btn-edit-matkul:hover, .btn-edit-mahasiswa:hover {
+            background-color: #d97706;
+        }
+
+        td form {
+            display: inline-block;
+            margin: 0;
+        }
+        table form .dltbtn {
+            background-color: #ef4444;
+            color: white;
+            padding: 6px 12px;
+            font-size: 0.8rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-left: 4px;
+        }
+
+         table form .dltbtn:hover {
+            background-color: #dc2626;
+        }
+
+        .form-container {
+            display: none;
+            background: #f9fafb;
+            border: 1px dashed #d1d5db;
+            padding: 24px;
+            border-radius: 12px;
+            margin: 20px 0;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .form-container h3 {
+            margin-bottom: 16px;
+            color: #374151;
+            font-size: 1.1rem;
+        }
+
+        .form-container label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #4b5563;
+            margin-bottom: 6px;
+        }
+
+        .form-container input[type="text"],
+        .form-container select {
+            width: 100%;
+            padding: 10px 14px;
+            font-size: 0.95rem;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            background-color: #ffffff;
+            color: #1f2937;
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            margin-bottom: 16px;
+        }
+
+        .form-container input[type="text"]:focus,
+        .form-container select:focus {
+            border-color: #4f46e5;
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+        }
+
+        .form-container input[readonly] {
+            background-color: #e5e7eb;
+            color: #9ca3af;
+            cursor: not-allowed;
+        }
+
+        .form-container small {
+            color: #9ca3af;
+            display: block;
+            margin-top: -12px;
+            margin-bottom: 16px;
+        }
+
+        table {
+            width: 100% !important;
+            border-collapse: collapse;
+            margin-top: 15px;
+            border-radius: 8px;
+            overflow: hidden;
+            border: none !important;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+
+        th {
+            background-color: #f8fafc;
+            color: #64748b;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 0.05em;
+            text-align: left;
+            padding: 14px 16px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        td {
+            padding: 14px 16px;
+            color: #334155;
+            font-size: 0.9rem;
+            border-bottom: 1px solid #f1f5f9;
+            background-color: #ffffff;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:hover td {
+            background-color: #f8fafc;
+        }
+
+        table ul {
+            margin: 0;
+            padding-left: 16px;
+            color: #475569;
+        }
+
+        table ul li {
+            margin-bottom: 2px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Manajemen Data Kampus</h1>
+
+    <hr><br>
+    <section id="section-dosen">
+        <h2>Manajemen Data Dosen</h2>
+        <button type="button" id="btn-tambah-dosen">Tambah Dosen</button>
+        <div id="form-dosen-container" class="form-container">
+            <h3 id="form-title-dosen">Form Dosen</h3>
+            <form id="form-dosen" action="/dosen" method="POST">
+                <input type="hidden" id="form-method-dosen" name="_method" value="POST">
+                
+                <label for="id_dosen">ID Dosen:</label>
+                <input type="text" id="id_dosen" name="_id" required><br><br>
+
+                <label for="nip_dosen">NIP:</label>
+                <input type="text" id="nip_dosen" name="nip" required><br><br>
+
+                <label for="nama_dosen">Nama Dosen:</label>
+                <input type="text" id="nama_dosen" name="nama" required><br><br>
+
+                <button type="submit" id="btn-submit-dosen">Simpan Dosen</button>
+                <button type="button" id="btn-batal-dosen">Batal</button>
+            </form>
+        </div>
+        <br>
+
+        <!-- Tabel Dosen -->
+        <table border="1" cellpadding="10" cellspacing="0" width="100%">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>NIP</th>
+                    <th>Nama</th>
+                    <th>Aksi</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% if (dataDosen && dataDosen.length > 0) { %>
+                    <% dataDosen.forEach(dosen => { %>
+                        <tr>
+                            <td><%= dosen._id %></td>
+                            <td><%= dosen.nip %></td>
+                            <td><%= dosen.nama %></td>
+                            <td>
+                                <button type="button" class="btn-edit-dosen" 
+                                    data-id="<%= dosen._id %>" 
+                                    data-nip="<%= dosen.nip %>" 
+                                    data-nama="<%= dosen.nama %>">
+                                    Edit
+                                </button>
+                                <form action="/dosen/<%= dosen._id %>?_method=DELETE" method="POST">
+                                    <button  class="dltbtn" type="submit" onclick="return confirm('Hapus data dosen ini?')">Delete</button>
+                                </form>
+                            </td>
+                        </tr>
+                    <% }) %>
+                <% } else { %>
+                    <tr><td colspan="4" style="text-align: center;">Tidak ada data dosen.</td></tr>
+                <% } %>
+            </tbody>
+        </table>
+    </section>
+
+    <br><br><hr><br>
+
+    <section id="section-matkul">
+        <h2>Manajemen Data Matakuliah</h2>
+        <button type="button" id="btn-tambah-matkul">Tambah Matakuliah</button>
+
+        <div id="form-matkul-container" class="form-container">
+            <h3 id="form-title-matkul">Form Matakuliah</h3>
+            <form id="form-matkul" action="/matakuliah" method="POST">
+                <input type="hidden" id="form-method-matkul" name="_method" value="POST">
+                
+                <label for="id_matkul">ID Matakuliah:</label>
+                <input type="text" id="id_matkul" name="_id" required><br><br>
+
+                <label for="nama_mk">Nama Mata Kuliah:</label>
+                <input type="text" id="nama_mk" name="nama_mk" required><br><br>
+
+                <label for="pengajar_id">Dosen Pengajar:</label>
+                <select id="pengajar_id" name="pengajar_id" required>
+                    <option value="">-- Pilih Dosen --</option>
+                    <% if (typeof listDosen !== 'undefined') { %>
+                        <% listDosen.forEach(dosen => { %>
+                            <option value="<%= dosen._id %>"><%= dosen.nama %></option>
+                        <% }) %>
+                    <% } %>
+                </select><br><br>
+
+                <button type="submit" id="btn-submit-matkul">Simpan Matakuliah</button>
+                <button type="button" id="btn-batal-matkul">Batal</button>
+            </form>
+        </div>
+        <br>
+
+        <!-- Tabel Matakuliah -->
+        <table border="1" cellpadding="10" cellspacing="0" width="100%">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nama Mata Kuliah</th>
+                    <th>Dosen Pengajar</th>
+                    <th>Aksi</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% if (dataMatakuliah && dataMatakuliah.length > 0) { %>
+                    <% dataMatakuliah.forEach(mk => { %>
+                        <tr>
+                            <td><%= mk._id %></td>
+                            <td><%= mk.nama_mk %></td>
+                            <td><%= mk.pengajar_id ? mk.pengajar_id.nama : 'Belum ditentukan' %></td>
+                            <td>
+                                <button type="button" class="btn-edit-matkul" 
+                                    data-id="<%= mk._id %>" 
+                                    data-nama="<%= mk.nama_mk %>" 
+                                    data-pengajar="<%= mk.pengajar_id ? mk.pengajar_id._id : '' %>">
+                                    Edit
+                                </button>
+                                <form action="/matakuliah/<%= mk._id %>?_method=DELETE" method="POST">
+                                    <button class="dltbtn" type="submit" onclick="return confirm('Hapus data mata kuliah ini?')">Delete</button>
+                                </form>
+                            </td>
+                        </tr>
+                    <% }) %>
+                <% } else { %>
+                    <tr><td colspan="4" style="text-align: center;">Tidak ada data mata kuliah.</td></tr>
+                <% } %>
+            </tbody>
+        </table>
+    </section>
+
+    <br><br><hr><br>
+
+    <section id="section-mahasiswa">
+        <h2>Manajemen Data Mahasiswa</h2>
+        <button type="button" id="btn-tambah-mahasiswa">Tambah Mahasiswa</button>
+
+        <div id="form-mahasiswa-container" class="form-container">
+            <h3 id="form-title-mahasiswa">Form Mahasiswa</h3>
+            <form id="form-mahasiswa" action="/mahasiswa" method="POST">
+                <input type="hidden" id="form-method-mahasiswa" name="_method" value="POST">
+                
+                <label for="id_mahasiswa">ID Mahasiswa:</label>
+                <input type="text" id="id_mahasiswa" name="_id" required><br><br>
+
+                <label for="nrp_mahasiswa">NRP:</label>
+                <input type="text" id="nrp_mahasiswa" name="nrp" required><br><br>
+
+                <label for="nama_mahasiswa">Nama Mahasiswa:</label>
+                <input type="text" id="nama_mahasiswa" name="nama" required><br><br>
+
+                <label for="mk_diambil">Mata Kuliah Diambil:</label><br>
+                <select id="mk_diambil" name="mk_diambil" multiple style="height: 100px; width: 300px;">
+                    <% if (typeof listMatakuliah !== 'undefined') { %>
+                        <% listMatakuliah.forEach(mk => { %>
+                            <option value="<%= mk._id %>"><%= mk.nama_mk %></option>
+                        <% }) %>
+                    <% } %>
+                </select><br>
+                <small>*Tekan Ctrl (Win) / Cmd (Mac) untuk memilih lebih dari satu</small><br><br>
+
+                <button type="submit" id="btn-submit-mahasiswa">Simpan Mahasiswa</button>
+                <button type="button" id="btn-batal-mahasiswa">Batal</button>
+            </form>
+        </div>
+        <br>
+
+        <!-- Tabel Mahasiswa -->
+        <table border="1" cellpadding="10" cellspacing="0" width="100%">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>NRP</th>
+                    <th>Nama</th>
+                    <th>Mata Kuliah</th>
+                    <th>Aksi</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% if (dataMahasiswa && dataMahasiswa.length > 0) { %>
+                    <% dataMahasiswa.forEach(mhs => { %>
+                        <tr>
+                            <td><%= mhs._id %></td>
+                            <td><%= mhs.nrp %></td>
+                            <td><%= mhs.nama %></td>
+                            <td>
+                                <% if (mhs.mk_diambil && mhs.mk_diambil.length > 0) { %>
+                                    <ul style="margin: 0; padding-left: 20px;">
+                                        <% mhs.mk_diambil.forEach(mk => { %>
+                                            <li><%= mk.nama_mk %></li>
+                                        <% }) %>
+                                    </ul>
+                                <% } else { %>
+                                    -
+                                <% } %>
+                            </td>
+                            <td>
+                                <button type="button" class="btn-edit-mahasiswa" 
+                                    data-id="<%= mhs._id %>" 
+                                    data-nrp="<%= mhs.nrp %>" 
+                                    data-nama="<%= mhs.nama %>"
+                                    data-mk='<%= JSON.stringify(mhs.mk_diambil ? mhs.mk_diambil.map(m => m._id) : []) %>'>
+                                    Edit
+                                </button>
+                                <form action="/mahasiswa/<%= mhs._id %>?_method=DELETE" method="POST">
+                                    <button class="dltbtn" onclick="return confirm('Hapus data mahasiswa ini?')" type="submit">Delete</button>
+                                </form>
+                            </td>
+                        </tr>
+                    <% }) %>
+                <% } else { %>
+                    <tr><td colspan="5" style="text-align: center;">Tidak ada data mahasiswa.</td></tr>
+                <% } %>
+            </tbody>
+        </table>
+    </section>
+
+    <script>
+        function toggleForm(containerId, show) {
+            const container = document.getElementById(containerId);
+            if (show) {
+                container.style.display = 'block';
+                container.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            } else {
+                container.style.display = 'none';
+            }
+        }
+
+        const btnTambahDosen = document.getElementById('btn-tambah-dosen');
+        const btnBatalDosen = document.getElementById('btn-batal-dosen');
+        const formDosen = document.getElementById('form-dosen');
+        const formMethodDosen = document.getElementById('form-method-dosen');
+        const formTitleDosen = document.getElementById('form-title-dosen');
+        const btnSubmitDosen = document.getElementById('btn-submit-dosen');
+
+        btnTambahDosen.addEventListener('click', () => {
+            formDosen.reset();
+            formDosen.action = '/dosen';
+            formMethodDosen.value = 'POST';
+            document.getElementById('id_dosen').readOnly = false;
+            formTitleDosen.textContent = 'Tambah Dosen Baru';
+            btnSubmitDosen.textContent = 'Simpan Dosen';
+            toggleForm('form-dosen-container', true);
+        });
+
+        btnBatalDosen.addEventListener('click', () => toggleForm('form-dosen-container', false));
+
+        document.querySelectorAll('.btn-edit-dosen').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const id = this.getAttribute('data-id');
+                const nip = this.getAttribute('data-nip');
+                const nama = this.getAttribute('data-nama');
+
+                document.getElementById('id_dosen').value = id;
+                document.getElementById('nip_dosen').value = nip;
+                document.getElementById('nama_dosen').value = nama;
+
+                document.getElementById('id_dosen').readOnly = true;
+                formDosen.action = `/dosen/${id}?_method=PUT`;
+                formMethodDosen.value = 'PUT';
+                formTitleDosen.textContent = 'Edit Data Dosen';
+                btnSubmitDosen.textContent = 'Update Dosen';
+                
+                toggleForm('form-dosen-container', true);
+            });
+        });
+
+        const btnTambahMatkul = document.getElementById('btn-tambah-matkul');
+        const btnBatalMatkul = document.getElementById('btn-batal-matkul');
+        const formMatkul = document.getElementById('form-matkul');
+        const formMethodMatkul = document.getElementById('form-method-matkul');
+        const formTitleMatkul = document.getElementById('form-title-matkul');
+        const btnSubmitMatkul = document.getElementById('btn-submit-matkul');
+
+        btnTambahMatkul.addEventListener('click', () => {
+            formMatkul.reset();
+            formMatkul.action = '/matakuliah';
+            formMethodMatkul.value = 'POST';
+            document.getElementById('id_matkul').readOnly = false;
+            formTitleMatkul.textContent = 'Tambah Matakuliah Baru';
+            btnSubmitMatkul.textContent = 'Simpan Matakuliah';
+            toggleForm('form-matkul-container', true);
+        });
+
+        btnBatalMatkul.addEventListener('click', () => toggleForm('form-matkul-container', false));
+
+        document.querySelectorAll('.btn-edit-matkul').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const id = this.getAttribute('data-id');
+                const namaMk = this.getAttribute('data-nama');
+                const pengajarId = this.getAttribute('data-pengajar');
+
+                document.getElementById('id_matkul').value = id;
+                document.getElementById('nama_mk').value = namaMk;
+                document.getElementById('pengajar_id').value = pengajarId;
+
+                document.getElementById('id_matkul').readOnly = true;
+                formMatkul.action = `/matakuliah/${id}?_method=PUT`;
+                formMethodMatkul.value = 'PUT';
+                formTitleMatkul.textContent = 'Edit Data Matakuliah';
+                btnSubmitMatkul.textContent = 'Update Matakuliah';
+                
+                toggleForm('form-matkul-container', true);
+            });
+        });
+
+        const btnTambahMahasiswa = document.getElementById('btn-tambah-mahasiswa');
+        const btnBatalMahasiswa = document.getElementById('btn-batal-mahasiswa');
+        const formMahasiswa = document.getElementById('form-mahasiswa');
+        const formMethodMahasiswa = document.getElementById('form-method-mahasiswa');
+        const formTitleMahasiswa = document.getElementById('form-title-mahasiswa');
+        const btnSubmitMahasiswa = document.getElementById('btn-submit-mahasiswa');
+
+        btnTambahMahasiswa.addEventListener('click', () => {
+            formMahasiswa.reset();
+            Array.from(document.getElementById('mk_diambil').options).forEach(opt => opt.selected = false);
+            
+            formMahasiswa.action = '/mahasiswa';
+            formMethodMahasiswa.value = 'POST';
+            document.getElementById('id_mahasiswa').readOnly = false;
+            formTitleMahasiswa.textContent = 'Tambah Mahasiswa Baru';
+            btnSubmitMahasiswa.textContent = 'Simpan Mahasiswa';
+            toggleForm('form-mahasiswa-container', true);
+        });
+
+        btnBatalMahasiswa.addEventListener('click', () => toggleForm('form-mahasiswa-container', false));
+
+        document.querySelectorAll('.btn-edit-mahasiswa').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const id = this.getAttribute('data-id');
+                const nrp = this.getAttribute('data-nrp');
+                const nama = this.getAttribute('data-nama');
+                
+                let mkDiambil = [];
+                try {
+                    mkDiambil = JSON.parse(this.getAttribute('data-mk') || '[]');
+                } catch(e) {
+                    console.error(e);
+                }
+
+                document.getElementById('id_mahasiswa').value = id;
+                document.getElementById('nrp_mahasiswa').value = nrp;
+                document.getElementById('nama_mahasiswa').value = nama;
+
+                const selectElement = document.getElementById('mk_diambil');
+                Array.from(selectElement.options).forEach(option => {
+                    option.selected = mkDiambil.includes(option.value);
+                });
+
+                document.getElementById('id_mahasiswa').readOnly = true;
+                formMahasiswa.action = `/mahasiswa/${id}?_method=PUT`;
+                formMethodMahasiswa.value = 'PUT';
+                formTitleMahasiswa.textContent = 'Edit Data Mahasiswa';
+                btnSubmitMahasiswa.textContent = 'Update Mahasiswa';
+                
+                toggleForm('form-mahasiswa-container', true);
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,28 @@
+{
+  "name": "crudmongo_express_compas-hdd",
+  "private": true,
+  "version": "1.0.0",
+  "main": "app.js",
+  "scripts": {
+    "start": "nodemon app.js",
+    "dev": "vite",
+    "build": "vite build",
+    "lint": "eslint .",
+    "preview": "vite preview"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "cookie-parser": "^1.4.7",
+    "ejs": "^3.1.10",
+    "express": "^5.2.1",
+    "method-override": "^3.0.0",
+    "mongoose": "^9.1.1"
+  },
+  "devDependencies": {
+    "globals": "^16.5.0",
+    "nodemon": "^3.1.11"
+  }
+}
