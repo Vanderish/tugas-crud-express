@@ -2,6 +2,8 @@ const express = require('express');
 const app = express();
 const mongoose = require('mongoose');
 const methodOverride = require('method-override');
+const dotenv = require('dotenv');
+dotenv.config();
 
 app.use(methodOverride('_method'));
 app.use(express.json());
@@ -19,9 +21,11 @@ app.use('/matakuliah', matakuliahRoutes);
 
 app.get('/', indexController.renderDashboard);
 
-mongoose.connect('mongodb://127.0.0.1:27017/kampus')
+mongoose.connect(process.env.DB)
   .then(() => {
       app.listen(3000);
       console.log('Berjalan di port 3000')
   })
   .catch(err => console.error('Gagal terhubung:', err));
+
+module.exports = app;
