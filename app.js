@@ -5,6 +5,13 @@ const methodOverride = require('method-override');
 const dotenv = require('dotenv');
 dotenv.config();
 
+mongoose.connect(process.env.DB)
+  .then(() => {
+      app.listen(3000);
+      console.log('Berjalan di port 3000')
+  })
+  .catch(err => console.error('Gagal terhubung:', err));
+
 app.use(methodOverride('_method'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -20,12 +27,5 @@ app.use('/dosen', dosenRoutes);
 app.use('/matakuliah', matakuliahRoutes);
 
 app.get('/', indexController.renderDashboard);
-
-mongoose.connect(process.env.DB)
-  .then(() => {
-      app.listen(3000);
-      console.log('Berjalan di port 3000')
-  })
-  .catch(err => console.error('Gagal terhubung:', err));
 
 module.exports = app;
