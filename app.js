@@ -7,7 +7,6 @@ const path = require('path');
 
 dotenv.config();
 
-console.log('cek db:', process.env.DB);
 const connectDB = async () => {
     if (mongoose.connection.readyState >= 1) return;
     try {
